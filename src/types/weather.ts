@@ -21,3 +21,12 @@ export interface WeatherResponse {
     latitude: number;
     longitude: number;
 }
+
+export interface RecentCity {
+    id: number;
+    name: string;
+    country: string;
+    temperature: number;
+    weathercode: number;
+    is_day: number;
+}
