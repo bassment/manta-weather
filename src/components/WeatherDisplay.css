@@ -1,0 +1,37 @@
+.weather-display {
+    text-align: center;
+    padding: 32px;
+    margin-top: 24px;
+    background: rgba(255, 255, 255, 0.1);                                                                                                           
+    border-radius: 16px;
+    backdrop-filter: blur(10px);                                                                                                                    
+  }                                                                                                                                                 
+   
+  .weather-emoji {                                                                                                                                  
+    font-size: 64px;                                                                                                                              
+    margin-bottom: 8px;
+  }
+
+  .weather-display h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;                                                                                                                               
+  }
+                                                                                                                                                    
+  .weather-temp {                                                                                                                                 
+    font-size: 56px;
+    font-weight: 700;
+    margin: 8px 0;                                                                                                                                  
+  }
+                                                                                                                                                    
+  .weather-desc {                                                                                                                                 
+    font-size: 18px;
+    color: #aaa;
+    margin: 4px 0;
+  }
+
+  .weather-details {
+    margin-top: 16px;
+    font-size: 14px;                                                                                                                                
+    color: #888;
+  }                     

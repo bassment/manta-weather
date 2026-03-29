@@ -62,7 +62,7 @@ var worker_default = {
       const data = await res.json();
       return json(data);
     }
-    if (url.pathname === "api/weather") {
+    if (url.pathname === "/api/weather") {
       const lat = url.searchParams.get("lat");
       const lon = url.searchParams.get("lon");
       if (!lat || !lon) {
