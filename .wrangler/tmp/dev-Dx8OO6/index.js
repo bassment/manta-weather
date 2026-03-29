@@ -108,6 +108,17 @@ var worker_default = {
         }
       });
     }
+    if (url.pathname === "/api/reverse-geocode") {
+      const lat = url.searchParams.get("lat");
+      const lon = url.searchParams.get("lon");
+      if (!lat || !lon) return json({ error: "Missing lat/lon" }, 400);
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+        { headers: { "User-Agent": "MantaWeather/1.0" } }
+      );
+      const data = await res.json();
+      return json(data);
+    }
     return json({ status: "Manta Weather API" });
   }
 };

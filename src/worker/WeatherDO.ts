@@ -30,7 +30,7 @@ export class WeatherDO implements DurableObject {
             return new Response(JSON.stringify(trimmed), {
                 headers: { "Content-Type": "application/json" },
             });
-        }
+        }                                                                                                                                            
 
         return new Response('NOT FOUND', { status: 404 });
     }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';                                                                                                      
+import { useState, useEffect, useRef } from 'react';                                                                                                      
   import { SearchBar } from './components/SearchBar';                                                                                               
   import { WeatherDisplay } from './components/WeatherDisplay';                                                                                     
   import { useWeather } from './hooks/useWeather';
@@ -7,12 +7,46 @@ import { useState, useEffect } from 'react';
   import type { GeocodingResult, RecentCity } from './types/weather';
    
   function App() {                                                                                                                                  
-    const [selectedCity, setSelectedCity] = useState<GeocodingResult | null>(null);                                                               
+    const [selectedCity, setSelectedCity] = useState<GeocodingResult | null>(null);
     const [recentCities, setRecentCities] = useState<RecentCity[]>([]);
     const { weather, loading, error } = useWeather(                                                                                                 
       selectedCity?.latitude ?? null,
       selectedCity?.longitude ?? null                                                                                                               
-    );                                                                                                                                              
+    );
+
+     const hasAutoLocated = useRef(false); 
+                                                                                                                                                    
+    useEffect(() => {
+      if (hasAutoLocated.current) return;
+      hasAutoLocated.current = true;                                                                                                                  
+    
+      navigator.geolocation.getCurrentPosition(                                                                                                       
+        async (position) => {
+          const { latitude, longitude } = position.coords;                                                                                                
+          try {
+            const res = await fetch(                                                                                                                      
+              `http://localhost:8787/api/reverse-geocode?lat=${latitude}&lon=${longitude}`                                                              
+            );
+            const data = await res.json() as { address?: { city?: string; town?: string; country?: string } };
+            const cityName = data.address?.city || data.address?.town || 'Your Location';                                                                 
+            const country = data.address?.country || '';                                                                                                  
+            setSelectedCity({ id: 0, name: cityName, latitude, longitude, country });                                                                     
+          } catch {                                                                                                                                       
+            setSelectedCity({ id: 0, name: 'Your Location', latitude, longitude, country: '' });                                                        
+          }                                                                                                                                               
+        }, 
+        () => {
+          setSelectedCity({
+            id: 3441575,
+            name: 'Montevideo',
+            latitude: -34.90328,
+            longitude: -56.18816,                                                                                                                     
+            country: 'Uruguay',
+          });                                                                                                                                         
+        },                                                                                                                                          
+        { timeout: 5000 }
+      );
+    }, []);                                                                                                                       
    
     // Save to recent when weather loads                                                                                                            
     useEffect(() => {                                                                                                                             
