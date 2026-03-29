@@ -14,7 +14,7 @@ export function useGeocode(query: string) {
         setLoading(true);
         try {
             const res = await fetch(`http://localhost:8787/api/geocode?name=${encodeURIComponent(query)}`);
-            const data = await res.json();
+            const data = await res.json() as { results?: GeocodingResult[] };
             setResults(data.results || []);
         } catch {
             setResults([]);

@@ -41,6 +41,24 @@ export default {
             return json(data);
         }
 
+        if (url.pathname === "/api/recent") {
+            const id = env.WEATHER_DO.idFromName("global");
+            const stub = env.WEATHER_DO.get(id);
+            const doRequest = new Request('https://do/recent', {
+                method: request.method,
+                headers: request.headers,
+                body: request.body
+            });
+            const doResponse = await stub.fetch(doRequest);
+            const data = await doResponse.text();
+            return new Response(data, {
+                headers: {
+                    "Content-Type": "application/json",
+                    ...CORS_HEADERS,
+                },
+            });
+        }
+
         return json({ status: "Manta Weather API" });
     }
 }

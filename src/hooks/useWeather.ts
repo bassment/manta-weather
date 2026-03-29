@@ -23,7 +23,7 @@ export function useWeather(lat: number | null, lon: number | null) {
                 );
                 const data: WeatherResponse = await res.json();
                 setWeather(data);
-            } catch (err) {
+            } catch {
                 if (!controller.signal.aborted) {
                 setError('Failed to fetch weather');
                 }

@@ -37,7 +37,26 @@ var WeatherDO = class {
     this.state = state;
   }
   async fetch(request) {
-    return new Response("WeatherDO response");
+    const url = new URL(request.url);
+    if (url.pathname === "/recent" && request.method === "GET") {
+      const cities = await this.state.storage.get("recent_cities");
+      return new Response(cities || "[]", {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    if (url.pathname === "/recent" && request.method === "POST") {
+      const city = await request.json();
+      const existing = await this.state.storage.get("recent_cities");
+      const cities = existing ? JSON.parse(existing) : [];
+      const filtered = cities.filter((c) => c.id !== city.id);
+      filtered.unshift(city);
+      const trimmed = filtered.slice(0, 5);
+      await this.state.storage.put("recent_cities", JSON.stringify(trimmed));
+      return new Response(JSON.stringify(trimmed), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    return new Response("NOT FOUND", { status: 404 });
   }
 };
 
@@ -71,6 +90,23 @@ var worker_default = {
       const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&current_weather=true`);
       const data = await res.json();
       return json(data);
+    }
+    if (url.pathname === "/api/recent") {
+      const id = env.WEATHER_DO.idFromName("global");
+      const stub = env.WEATHER_DO.get(id);
+      const doRequest = new Request("https://do/recent", {
+        method: request.method,
+        headers: request.headers,
+        body: request.body
+      });
+      const doResponse = await stub.fetch(doRequest);
+      const data = await doResponse.text();
+      return new Response(data, {
+        headers: {
+          "Content-Type": "application/json",
+          ...CORS_HEADERS
+        }
+      });
     }
     return json({ status: "Manta Weather API" });
   }
