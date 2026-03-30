@@ -30,6 +30,11 @@
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 
+.search-bar input:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
 .search-results {
   position: absolute;
   top: 100%;
@@ -57,7 +62,8 @@
   font-size: 15px;
 }
 
-.search-results li:hover {
+.search-results li:hover,
+.search-results li.active {
   background: rgba(255, 255, 255, 0.12);
 }
 

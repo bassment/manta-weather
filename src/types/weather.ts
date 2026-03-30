@@ -26,6 +26,8 @@ export interface RecentCity {
     id: number;
     name: string;
     country: string;
+    latitude: number;
+    longitude: number;
     temperature: number;
     weathercode: number;
     is_day: number;

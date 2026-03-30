@@ -7,7 +7,6 @@ A weather app with animated, weather-responsive backgrounds built with React, Ty
   <img src="public/screenshot-night.png" alt="Clear Night" width="180" />
   <img src="public/screenshot-storm.png" alt="Thunderstorm" width="180" />
   <img src="public/screenshot-rain.png" alt="Rain" width="180" />
-  <img src="public/screenshot-fog.png" alt="Fog" width="180" />
 </p>
 
 ## Features

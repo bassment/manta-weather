@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { SearchBar } from './components/SearchBar';
+import { SearchBar, type SearchBarHandle } from './components/SearchBar';
 import { WeatherDisplay } from './components/WeatherDisplay';
 import { WeatherBackground } from './components/WeatherBackground';
 import { useWeather } from './hooks/useWeather';
@@ -16,6 +16,7 @@ function App() {
   );
 
   const hasAutoLocated = useRef(false);
+  const searchBarRef = useRef<SearchBarHandle>(null);
 
   useEffect(() => {
     if (hasAutoLocated.current) return;
@@ -60,6 +61,8 @@ function App() {
         id: selectedCity.id,
         name: selectedCity.name,
         country: selectedCity.country,
+        latitude: selectedCity.latitude,
+        longitude: selectedCity.longitude,
         temperature: weather.current_weather.temperature,
         weathercode: weather.current_weather.weathercode,
         is_day: weather.current_weather.is_day,
@@ -83,11 +86,14 @@ function App() {
 
   return (
     <WeatherBackground weatherCode={weatherCode} isDay={isDay}>
-      <div className="app">
+      <a href="#weather-content" className="skip-link">Skip to weather</a>
+      <main className="app" id="weather-content">
         <h1>Manta Weather</h1>
-        <SearchBar onCitySelect={setSelectedCity} />
-        {loading && <p className="status-msg">Loading weather...</p>}
-        {error && <p className="status-msg error">{error}</p>}
+        <SearchBar ref={searchBarRef} onCitySelect={setSelectedCity} />
+        <div aria-live="polite" aria-atomic="true">
+          {loading && <p className="status-msg">Loading weather...</p>}
+          {error && <p className="status-msg error" role="alert">{error}</p>}
+        </div>
         {weather?.current_weather && selectedCity && (
           <WeatherDisplay
             cityName={selectedCity.name}
@@ -96,30 +102,32 @@ function App() {
           />
         )}
         {recentCities.length > 0 && (
-          <div className="recent-cities">
-            <h3>Recently Searched</h3>
+          <nav className="recent-cities" aria-label="Recently searched cities">
+            <h2>Recently Searched</h2>
             <ul>
               {recentCities.map((city) => (
-                <li
-                  key={city.id}
-                  onClick={() => {
-                    setSelectedCity({
-                      id: city.id,
-                      name: city.name,
-                      latitude: 0,
-                      longitude: 0,
-                      country: city.country,
-                    });
-                  }}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {city.name}, {city.country} — {Math.round(city.temperature)}°C
+                <li key={city.id}>
+                  <button
+                    onClick={() => {
+                      searchBarRef.current?.clear();
+                      setSelectedCity({
+                        id: city.id,
+                        name: city.name,
+                        latitude: city.latitude,
+                        longitude: city.longitude,
+                        country: city.country,
+                      });
+                    }}
+                    aria-label={`View weather for ${city.name}, ${city.country}, ${Math.round(city.temperature)} degrees`}
+                  >
+                    {city.name}, {city.country} — {Math.round(city.temperature)}°C
+                  </button>
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
         )}
-      </div>
+      </main>
     </WeatherBackground>
   );
 }

@@ -1,3 +1,22 @@
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  z-index: 100;
+  font-size: 14px;
+  text-decoration: none;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
 .app {
   max-width: 600px;
   margin: 0 auto;
@@ -35,7 +54,7 @@
   max-width: 400px;
 }
 
-.recent-cities h3 {
+.recent-cities h2 {
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -51,20 +70,31 @@
 }
 
 .recent-cities li {
+  margin-bottom: 8px;
+}
+
+.recent-cities button {
+  width: 100%;
   padding: 10px 16px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
-  margin-bottom: 8px;
   font-size: 15px;
   color: inherit;
+  cursor: pointer;
   transition: background 0.2s, transform 0.2s;
+  font-family: inherit;
 }
 
-.recent-cities li:hover {
+.recent-cities button:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
+}
+
+.recent-cities button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
 }
 
 @media (max-width: 640px) {
@@ -78,7 +108,7 @@
   .recent-cities {
     margin-top: 24px;
   }
-  .recent-cities li {
+  .recent-cities button {
     font-size: 14px;
     padding: 10px 14px;
   }
