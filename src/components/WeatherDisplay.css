@@ -1,37 +1,69 @@
 .weather-display {
-    text-align: center;
-    padding: 32px;
-    margin-top: 24px;
-    background: rgba(255, 255, 255, 0.1);                                                                                                           
-    border-radius: 16px;
-    backdrop-filter: blur(10px);                                                                                                                    
-  }                                                                                                                                                 
-   
-  .weather-emoji {                                                                                                                                  
-    font-size: 64px;                                                                                                                              
-    margin-bottom: 8px;
-  }
+  text-align: center;
+  padding: 32px 40px;
+  margin-top: 24px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  color: inherit;
+  width: 100%;
+  max-width: 400px;
+}
 
-  .weather-display h2 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: 500;                                                                                                                               
+.weather-emoji {
+  font-size: 80px;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+.weather-display h2 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 400;
+  opacity: 0.8;
+  color: inherit;
+  letter-spacing: 0.5px;
+}
+
+.weather-temp {
+  font-size: 80px;
+  font-weight: 200;
+  margin: 0 0 8px;
+  letter-spacing: -3px;
+  line-height: 1;
+  color: inherit;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.weather-desc {
+  font-size: 16px;
+  opacity: 0.65;
+  margin: 0;
+  color: inherit;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 300;
+}
+
+.weather-details {
+  margin-top: 16px;
+  font-size: 14px;
+  opacity: 0.5;
+  color: inherit;
+}
+
+@media (max-width: 640px) {
+  .weather-display {
+    padding: 24px 20px;
+    border-radius: 20px;
   }
-                                                                                                                                                    
-  .weather-temp {                                                                                                                                 
+  .weather-emoji {
+    font-size: 64px;
+  }
+  .weather-temp {
     font-size: 56px;
-    font-weight: 700;
-    margin: 8px 0;                                                                                                                                  
   }
-                                                                                                                                                    
-  .weather-desc {                                                                                                                                 
-    font-size: 18px;
-    color: #aaa;
-    margin: 4px 0;
-  }
-
-  .weather-details {
-    margin-top: 16px;
-    font-size: 14px;                                                                                                                                
-    color: #888;
-  }                     
+}

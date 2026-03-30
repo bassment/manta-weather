@@ -1,109 +1,127 @@
-import { useState, useEffect, useRef } from 'react';                                                                                                      
-  import { SearchBar } from './components/SearchBar';                                                                                               
-  import { WeatherDisplay } from './components/WeatherDisplay';                                                                                     
-  import { useWeather } from './hooks/useWeather';
-  import './App.css';                                        
-  
-  import type { GeocodingResult, RecentCity } from './types/weather';
-   
-  function App() {                                                                                                                                  
-    const [selectedCity, setSelectedCity] = useState<GeocodingResult | null>(null);
-    const [recentCities, setRecentCities] = useState<RecentCity[]>([]);
-    const { weather, loading, error } = useWeather(                                                                                                 
-      selectedCity?.latitude ?? null,
-      selectedCity?.longitude ?? null                                                                                                               
-    );
+import { useState, useEffect, useRef } from 'react';
+import { SearchBar } from './components/SearchBar';
+import { WeatherDisplay } from './components/WeatherDisplay';
+import { WeatherBackground } from './components/WeatherBackground';
+import { useWeather } from './hooks/useWeather';
+import './App.css';
 
-     const hasAutoLocated = useRef(false); 
-                                                                                                                                                    
-    useEffect(() => {
-      if (hasAutoLocated.current) return;
-      hasAutoLocated.current = true;                                                                                                                  
-    
-      navigator.geolocation.getCurrentPosition(                                                                                                       
-        async (position) => {
-          const { latitude, longitude } = position.coords;                                                                                                
-          try {
-            const res = await fetch(                                                                                                                      
-              `http://localhost:8787/api/reverse-geocode?lat=${latitude}&lon=${longitude}`                                                              
-            );
-            const data = await res.json() as { address?: { city?: string; town?: string; country?: string } };
-            const cityName = data.address?.city || data.address?.town || 'Your Location';                                                                 
-            const country = data.address?.country || '';                                                                                                  
-            setSelectedCity({ id: 0, name: cityName, latitude, longitude, country });                                                                     
-          } catch {                                                                                                                                       
-            setSelectedCity({ id: 0, name: 'Your Location', latitude, longitude, country: '' });                                                        
-          }                                                                                                                                               
-        }, 
-        () => {
-          setSelectedCity({
-            id: 3441575,
-            name: 'Montevideo',
-            latitude: -34.90328,
-            longitude: -56.18816,                                                                                                                     
-            country: 'Uruguay',
-          });                                                                                                                                         
-        },                                                                                                                                          
-        { timeout: 5000 }
-      );
-    }, []);                                                                                                                       
-   
-    // Save to recent when weather loads                                                                                                            
-    useEffect(() => {                                                                                                                             
-      if (!selectedCity || !weather?.current_weather) return;
-                                                                                                                                                    
-      fetch('http://localhost:8787/api/recent', {
-        method: 'POST',                                                                                                                             
-        headers: { 'Content-Type': 'application/json' },                                                                                          
-        body: JSON.stringify({                                                                                                                      
-          id: selectedCity.id,
-          name: selectedCity.name,                                                                                                                  
-          country: selectedCity.country,                                                                                                          
-          temperature: weather.current_weather.temperature,
-          weathercode: weather.current_weather.weathercode,                                                                                         
-          is_day: weather.current_weather.is_day,
-        }),                                                                                                                                         
-      })                                                                                                                                          
-        .then((res) => res.json() as Promise<RecentCity[]>)
-        .then(setRecentCities)                                                                                                                      
-        .catch(() => {});
-    }, [weather, selectedCity]);                                                                                                                    
-                                                                                                                                                  
-    // Load recent on mount                                                                                                                         
-    useEffect(() => {
-      fetch('http://localhost:8787/api/recent')                                                                                                     
-        .then((res) => res.json() as Promise<RecentCity[]>)                                                                                                                
-        .then(setRecentCities)
-        .catch(() => {});
-    }, []);
-                                                                                                                                                    
-    return (
-      <div className="app">                                                                                                                         
-        <h1>Manta Weather</h1>                                                                                                                    
+import type { GeocodingResult, RecentCity } from './types/weather';
+
+function App() {
+  const [selectedCity, setSelectedCity] = useState<GeocodingResult | null>(null);
+  const [recentCities, setRecentCities] = useState<RecentCity[]>([]);
+  const { weather, loading, error } = useWeather(
+    selectedCity?.latitude ?? null,
+    selectedCity?.longitude ?? null
+  );
+
+  const hasAutoLocated = useRef(false);
+
+  useEffect(() => {
+    if (hasAutoLocated.current) return;
+    hasAutoLocated.current = true;
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const res = await fetch(
+            `http://localhost:8787/api/reverse-geocode?lat=${latitude}&lon=${longitude}`
+          );
+          const data = await res.json() as { address?: { city?: string; town?: string; country?: string } };
+          const cityName = data.address?.city || data.address?.town || 'Your Location';
+          const country = data.address?.country || '';
+          setSelectedCity({ id: 0, name: cityName, latitude, longitude, country });
+        } catch {
+          setSelectedCity({ id: 0, name: 'Your Location', latitude, longitude, country: '' });
+        }
+      },
+      () => {
+        setSelectedCity({
+          id: 3441575,
+          name: 'Montevideo',
+          latitude: -34.90328,
+          longitude: -56.18816,
+          country: 'Uruguay',
+        });
+      },
+      { timeout: 5000 }
+    );
+  }, []);
+
+  // Save to recent when weather loads
+  useEffect(() => {
+    if (!selectedCity || !weather?.current_weather) return;
+
+    fetch('http://localhost:8787/api/recent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: selectedCity.id,
+        name: selectedCity.name,
+        country: selectedCity.country,
+        temperature: weather.current_weather.temperature,
+        weathercode: weather.current_weather.weathercode,
+        is_day: weather.current_weather.is_day,
+      }),
+    })
+      .then((res) => res.json() as Promise<RecentCity[]>)
+      .then(setRecentCities)
+      .catch(() => {});
+  }, [weather, selectedCity]);
+
+  // Load recent on mount
+  useEffect(() => {
+    fetch('http://localhost:8787/api/recent')
+      .then((res) => res.json() as Promise<RecentCity[]>)
+      .then(setRecentCities)
+      .catch(() => {});
+  }, []);
+
+  const weatherCode = weather?.current_weather?.weathercode ?? null;
+  const isDay = weather?.current_weather ? weather.current_weather.is_day === 1 : null;
+
+  return (
+    <WeatherBackground weatherCode={weatherCode} isDay={isDay}>
+      <div className="app">
+        <h1>Manta Weather</h1>
         <SearchBar onCitySelect={setSelectedCity} />
-        {loading && <p>Loading weather...</p>}
-        {error && <p>{error}</p>}                                                                                                                   
+        {loading && <p className="status-msg">Loading weather...</p>}
+        {error && <p className="status-msg error">{error}</p>}
         {weather?.current_weather && selectedCity && (
-          <WeatherDisplay                                                                                                                           
-            cityName={selectedCity.name}                                                                                                            
+          <WeatherDisplay
+            cityName={selectedCity.name}
             country={selectedCity.country}
-            weather={weather.current_weather}                                                                                                       
-          />                                                                                                                                      
+            weather={weather.current_weather}
+          />
         )}
         {recentCities.length > 0 && (
-          <div className="recent-cities">                                                                                                           
+          <div className="recent-cities">
             <h3>Recently Searched</h3>
-            <ul>                                                                                                                                    
-              {recentCities.map((city) => (                                                                                                       
-                <li key={city.id}>                                                                                                                  
+            <ul>
+              {recentCities.map((city) => (
+                <li
+                  key={city.id}
+                  onClick={() => {
+                    setSelectedCity({
+                      id: city.id,
+                      name: city.name,
+                      latitude: 0,
+                      longitude: 0,
+                      country: city.country,
+                    });
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
                   {city.name}, {city.country} — {Math.round(city.temperature)}°C
-                </li>                                                                                                                               
-              ))}                                                                                                                                 
-            </ul>                                                                                                                                   
-          </div>                                                                                                                                  
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
-    );
-  }
+    </WeatherBackground>
+  );
+}
 
-  export default App;
+export default App;

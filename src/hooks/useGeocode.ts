@@ -4,7 +4,7 @@ import type { GeocodingResult } from '../types/weather';
 export function useGeocode(query: string) {
     const [results, setResults] = useState<GeocodingResult[]>([]);
     const [loading, setLoading] = useState(false);
-    
+
     useEffect(() => {
         if (query.length < 2) {
             setResults([]);
@@ -25,6 +25,6 @@ export function useGeocode(query: string) {
 
     return () => clearTimeout(timeout);
     }, [query]);
-    
+
     return { results, loading };
 }

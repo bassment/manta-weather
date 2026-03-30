@@ -39,4 +39,3 @@ export function useWeather(lat: number | null, lon: number | null) {
 
     return { weather, loading, error };
 }
-                

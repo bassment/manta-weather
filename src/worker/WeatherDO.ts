@@ -19,9 +19,11 @@ export class WeatherDO implements DurableObject {
             const city = await request.json() as { id: number; [key: string]: unknown};
             const existing = await this.state.storage.get<string>("recent_cities");
             const cities = existing ? JSON.parse(existing) : [];
-            
+
             // Remive duplicates
-            const filtered = cities.filter((c: { id: number }) => c.id !== city.id);
+            const filtered = cities.filter((c: { id: number; name: string; country: string }) =>
+                !(c.name === city.name && c.country === city.country)
+            );
             //Add to front and max 5
             filtered.unshift(city);
             const trimmed = filtered.slice(0, 5);
@@ -30,7 +32,7 @@ export class WeatherDO implements DurableObject {
             return new Response(JSON.stringify(trimmed), {
                 headers: { "Content-Type": "application/json" },
             });
-        }                                                                                                                                            
+        }
 
         return new Response('NOT FOUND', { status: 404 });
     }
