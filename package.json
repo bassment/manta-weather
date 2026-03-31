@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:worker": "wrangler dev",
+    "deploy": "vite build && wrangler deploy",
     "deploy:worker": "wrangler deploy",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

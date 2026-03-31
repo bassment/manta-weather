@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { WeatherResponse } from '../types/weather';
+import { API_BASE } from '../config';
 
 export function useWeather(lat: number | null, lon: number | null) {
     const [weather, setWeather] = useState<WeatherResponse | null>(null);
@@ -18,7 +19,7 @@ export function useWeather(lat: number | null, lon: number | null) {
             setError(null);
             try {
                 const res = await fetch(
-                    `http://localhost:8787/api/weather?lat=${lat}&lon=${lon}`,
+                    `${API_BASE}/api/weather?lat=${lat}&lon=${lon}`,
                     { signal: controller.signal }
                 );
                 if (!res.ok) {

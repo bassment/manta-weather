@@ -3,6 +3,7 @@ import { SearchBar, type SearchBarHandle } from './components/SearchBar';
 import { WeatherDisplay } from './components/WeatherDisplay';
 import { WeatherBackground } from './components/WeatherBackground';
 import { useWeather } from './hooks/useWeather';
+import { API_BASE } from './config';
 import './App.css';
 
 import type { GeocodingResult, RecentCity } from './types/weather';
@@ -27,7 +28,7 @@ function App() {
         const { latitude, longitude } = position.coords;
         try {
           const res = await fetch(
-            `http://localhost:8787/api/reverse-geocode?lat=${latitude}&lon=${longitude}`
+            `${API_BASE}/api/reverse-geocode?lat=${latitude}&lon=${longitude}`
           );
           const data = await res.json() as { address?: { city?: string; town?: string; country?: string } };
           const cityName = data.address?.city || data.address?.town || 'Your Location';
@@ -54,7 +55,7 @@ function App() {
   useEffect(() => {
     if (!selectedCity || !weather?.current_weather) return;
 
-    fetch('http://localhost:8787/api/recent', {
+    fetch(`${API_BASE}/api/recent`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -75,7 +76,7 @@ function App() {
 
   // Load recent on mount
   useEffect(() => {
-    fetch('http://localhost:8787/api/recent')
+    fetch(`${API_BASE}/api/recent`)
       .then((res) => res.json() as Promise<RecentCity[]>)
       .then(setRecentCities)
       .catch(() => {});

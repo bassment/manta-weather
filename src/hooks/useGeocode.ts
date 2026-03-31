@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { GeocodingResult } from '../types/weather';
+import { API_BASE } from '../config';
 
 export function useGeocode(query: string) {
     const [results, setResults] = useState<GeocodingResult[]>([]);
@@ -22,7 +23,7 @@ export function useGeocode(query: string) {
             setNoResults(false);
             try {
                 const res = await fetch(
-                    `http://localhost:8787/api/geocode?name=${encodeURIComponent(query)}`,
+                    `${API_BASE}/api/geocode?name=${encodeURIComponent(query)}`,
                     { signal: controller.signal }
                 );
                 if (!res.ok) {
