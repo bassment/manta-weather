@@ -119,7 +119,7 @@ function App() {
                         country: city.country,
                       });
                     }}
-                    aria-label={`View weather for ${city.name}, ${city.country}, ${Math.round(city.temperature)} degrees`}
+                    aria-label={`View weather for ${city.name}, ${city.country}, ${Math.round(city.temperature)} degrees Celsius`}
                   >
                     {city.name}, {city.country} — {Math.round(city.temperature)}°C
                   </button>
