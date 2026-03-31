@@ -18,23 +18,34 @@ export function useWeather(lat: number | null, lon: number | null) {
             setError(null);
             try {
                 const res = await fetch(
-                `http://localhost:8787/api/weather?lat=${lat}&lon=${lon}`,
-                { signal: controller.signal }
+                    `http://localhost:8787/api/weather?lat=${lat}&lon=${lon}`,
+                    { signal: controller.signal }
                 );
+                if (!res.ok) {
+                    throw new Error(`Weather API returned ${res.status}`);
+                }
                 const data: WeatherResponse = await res.json();
+                if (!data.current_weather) {
+                    throw new Error('No weather data available for this location');
+                }
                 setWeather(data);
-            } catch {
+            } catch (err) {
                 if (!controller.signal.aborted) {
-                setError('Failed to fetch weather');
+                    const message = err instanceof Error ? err.message : 'Failed to fetch weather';
+                    if (message.includes('fetch')) {
+                        setError('Unable to connect. Please check your internet connection.');
+                    } else {
+                        setError(message);
+                    }
                 }
             } finally {
                 setLoading(false);
             }
         }
 
-    fetchWeather();
+        fetchWeather();
 
-    return () => controller.abort();
+        return () => controller.abort();
     }, [lat, lon]);
 
     return { weather, loading, error };

@@ -15,7 +15,7 @@ export const SearchBar = forwardRef<SearchBarHandle, SearchBarProps>(function Se
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
-  const { results, loading } = useGeocode(query);
+  const { results, loading, noResults, error } = useGeocode(query);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
@@ -94,6 +94,12 @@ export const SearchBar = forwardRef<SearchBarHandle, SearchBarProps>(function Se
         autoComplete="off"
       />
       {loading && <span className="search-loading" aria-live="polite">Searching...</span>}
+      {isOpen && noResults && !loading && (
+        <div className="search-no-results" role="status">No cities found for "{query}"</div>
+      )}
+      {isOpen && error && !loading && (
+        <div className="search-error" role="alert">{error}</div>
+      )}
       {isOpen && results.length > 0 && (
         <ul
           ref={listRef}

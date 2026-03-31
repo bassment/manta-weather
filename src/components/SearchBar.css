@@ -67,6 +67,28 @@
   background: rgba(255, 255, 255, 0.12);
 }
 
+.search-no-results,
+.search-error {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 6px 0 0;
+  padding: 14px 16px;
+  background: rgba(30, 30, 50, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  color: #94a3b8;
+  font-size: 14px;
+  z-index: 50;
+}
+
+.search-error {
+  color: #fca5a5;
+}
+
 .search-loading {
   position: absolute;
   right: 16px;
